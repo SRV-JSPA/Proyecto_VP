@@ -10,6 +10,12 @@ Controles:
 0-8  Seleccionar gesto
 r    Iniciar o detener grabación
 q    Salir y guardar datos
+
+Por:
+
+Brandon Reyes - 22992
+Nancy Mazariegos - 22513
+José Pereira - 22318
 ===========================================================================
 """
 
@@ -30,7 +36,7 @@ GESTOS = {
     4: "pulgar_abajo",
     5: "pinch",
     6: "paz",
-    7: "tres_dedos",
+    7: "anime",
     8: "ok_sign",
 }
 
@@ -260,7 +266,7 @@ def dibujar_interfaz(cuadro, gesto_actual, esta_grabando, conteo_muestras, cuadr
 
     cuadro = dibujar_texto(
         cuadro,
-        "GestureOS - Data Collector :)",
+        "GestureOS",
         10,
         30,
         0.7,
@@ -326,7 +332,7 @@ def dibujar_interfaz(cuadro, gesto_actual, esta_grabando, conteo_muestras, cuadr
 
     cuadro = dibujar_texto(
         cuadro,
-        "--- Muestras ---",
+        "Muestras",
         10,
         130,
         0.45,
@@ -365,7 +371,7 @@ def dibujar_interfaz(cuadro, gesto_actual, esta_grabando, conteo_muestras, cuadr
 
     cuadro = dibujar_texto(
         cuadro,
-        "--- Controles ---",
+        "Controles",
         10,
         desplazamiento_y,
         0.45,
@@ -471,8 +477,7 @@ def abrir_camara():
         camara_abierta = False
 
     if not camara_abierta:
-        print("ERROR: No se pudo abrir la camara.")
-        print("Verifica que tu webcam este conectada y no este en uso.")
+        print("Error en la camara")
         return None
 
     ancho_deseado = 640
@@ -482,16 +487,6 @@ def abrir_camara():
     captura_video.set(cv2.CAP_PROP_FRAME_HEIGHT, alto_deseado)
 
     return captura_video
-
-
-def imprimir_informacion_inicial(ruta_csv):
-    print("=" * 60)
-    print("GestureOS - Recolector de Datos")
-    print("=" * 60)
-    print("Archivo de salida: " + ruta_csv)
-    print("Gestos configurados: " + str(len(GESTOS)))
-    print("Presiona 'q' para salir y guardar.")
-    print("=" * 60)
 
 
 def procesar_puntos_mano(cuadro, resultados, esta_grabando, gesto_actual, datos_recolectados, conteo_muestras):
@@ -624,21 +619,12 @@ def guardar_datos_csv(ruta_csv, datos_recolectados):
 
 def imprimir_resumen_final(ruta_csv, datos_recolectados, conteo_muestras):
     print("")
-    print("=" * 60)
-    print("DATOS GUARDADOS EXITOSAMENTE")
-    print("=" * 60)
-    print("Archivo: " + ruta_csv)
     print("Total de muestras: " + str(len(datos_recolectados)))
     print("")
     print("Muestras por gesto:")
 
     for indice_gesto, nombre_gesto in GESTOS.items():
         cantidad = conteo_muestras[indice_gesto]
-
-        if cantidad >= 500:
-            estado = "OK"
-        else:
-            estado = "NECESITA MAS"
 
         print(
             "  ["
@@ -647,12 +633,7 @@ def imprimir_resumen_final(ruta_csv, datos_recolectados, conteo_muestras):
             + nombre_gesto
             + ": "
             + str(cantidad)
-            + " ("
-            + estado
-            + ")"
         )
-
-    print("=" * 60)
 
 
 def main():
@@ -670,8 +651,6 @@ def main():
 
     if captura_video is None:
         return
-
-    imprimir_informacion_inicial(ruta_csv)
 
     with mp_manos.Hands(
         static_image_mode=False,
@@ -694,7 +673,7 @@ def main():
                 lectura_correcta, cuadro = captura_video.read()
 
                 if not lectura_correcta:
-                    print("ERROR: No se pudo leer frame de la camara.")
+                    print("Error en la camara")
                     programa_activo = False
                 else:
                     cuadro = cv2.flip(cuadro, 1)
@@ -732,7 +711,7 @@ def main():
                         cuadros_por_segundo,
                     )
 
-                    cv2.imshow("GestureOS - Data Collector :)", cuadro)
+                    cv2.imshow("GestureOS", cuadro)
 
                     tecla = cv2.waitKey(1) & 0xFF
 
