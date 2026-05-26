@@ -7,6 +7,7 @@ import joblib
 import pyautogui
 import subprocess
 import ctypes
+import webbrowser
 
 
 GESTOS = {
@@ -24,7 +25,7 @@ GESTOS = {
 ACCIONES = {
     0: "Screenshot",
     1: "Bloquear PC",
-    2: "Desbloquear PC",
+    2: "Abrir YouTube",
     3: "Subir Volumen",
     4: "Bajar Volumen",
     5: "Iniciar Grabacion",
@@ -198,11 +199,14 @@ def ejecutar_bloquear_pc():
     ctypes.windll.user32.LockWorkStation()
 
 
-def ejecutar_desbloquear_pc():
-    pyautogui.moveRel(1, 0)
-    pyautogui.moveRel(-1, 0)
-    pyautogui.press('enter')
+#def ejecutar_desbloquear_pc():
+#    pyautogui.moveRel(1, 0)
+#    pyautogui.moveRel(-1, 0)
+#    pyautogui.press('enter')
 
+def ejecutar_abrir_youtube():
+    enlace_youtube = "https://youtu.be/dQw4w9WgXcQ?si=1eqHso5EqyxvqtEb"
+    webbrowser.open(enlace_youtube)
 
 def ejecutar_subir_volumen():
     pyautogui.press('volumeup')
@@ -232,7 +236,7 @@ def ejecutar_detener_grabacion():
 FUNCIONES_ACCIONES = {
     0: ejecutar_screenshot,
     1: ejecutar_bloquear_pc,
-    2: ejecutar_desbloquear_pc,
+    2: ejecutar_abrir_youtube,
     3: ejecutar_subir_volumen,
     4: ejecutar_bajar_volumen,
     5: ejecutar_iniciar_grabacion,
