@@ -9,7 +9,6 @@ import subprocess
 import ctypes
 import webbrowser
 
-
 GESTOS = {
     0: "palma_abierta",
     1: "puno_cerrado",
@@ -30,7 +29,7 @@ ACCIONES = {
     4: "Bajar Volumen",
     5: "Iniciar Grabacion",
     6: "Cambiar Ventana",
-    7: "Abrir Bloc de notas",
+    7: "Abrir bloc de notas",
     8: "Detener Grabacion",
 }
 
@@ -199,14 +198,10 @@ def ejecutar_bloquear_pc():
     ctypes.windll.user32.LockWorkStation()
 
 
-#def ejecutar_desbloquear_pc():
-#    pyautogui.moveRel(1, 0)
-#    pyautogui.moveRel(-1, 0)
-#    pyautogui.press('enter')
-
 def ejecutar_abrir_youtube():
     enlace_youtube = "https://youtu.be/dQw4w9WgXcQ?si=1eqHso5EqyxvqtEb"
     webbrowser.open(enlace_youtube)
+
 
 def ejecutar_subir_volumen():
     pyautogui.press('volumeup')
@@ -360,88 +355,7 @@ def dibujar_interfaz(cuadro, gesto_predicho, confianza, estado, umbral_confianza
     cv2.addWeighted(capa_superpuesta, 0.6, cuadro, 0.4, 0, cuadro)
     cuadro = dibujar_texto(cuadro, "GestureOS", 10, 30, 0.7, (0, 255, 200), 2)
     cuadro = dibujar_texto(cuadro, "MODO INFERENCIA", 10, 55, 0.45, (100, 255, 100), 1)
-    desplazamiento_y = 90
-
-    if gesto_predicho >= 0 and confianza >= umbral_confianza:
-        nombre_gesto = GESTOS.get(gesto_predicho, "Desconocido")
-        accion_gesto = ACCIONES.get(gesto_predicho, "Sin acción")
-
-        cuadro = dibujar_texto(
-            cuadro,
-            "Gesto: " + nombre_gesto,
-            10,
-            desplazamiento_y,
-            0.55,
-            (255, 255, 255),
-            2,
-        )
-
-        desplazamiento_y = desplazamiento_y + 25
-
-        cuadro = dibujar_texto(
-            cuadro,
-            "Accion: " + accion_gesto,
-            10,
-            desplazamiento_y,
-            0.45,
-            (0, 255, 200),
-            1,
-        )
-
-        desplazamiento_y = desplazamiento_y + 25
-        texto_confianza = "Confianza: " + "{:.1%}".format(confianza)
-        cuadro = dibujar_texto(cuadro, texto_confianza, 10, desplazamiento_y, 0.45, (200, 200, 200), 1)
-
-        desplazamiento_y = desplazamiento_y + 15
-
-        ancho_barra = 200
-        alto_barra = 12
-        relleno_barra = int(ancho_barra * confianza)
-
-        cv2.rectangle(cuadro, (10, desplazamiento_y), (10 + ancho_barra, desplazamiento_y + alto_barra), (100, 100, 100), -1)
-
-        if confianza >= umbral_confianza:
-            color_barra = (0, 255, 0)
-        else:
-            color_barra = (0, 0, 255)
-
-        cv2.rectangle(cuadro, (10, desplazamiento_y), (10 + relleno_barra, desplazamiento_y + alto_barra), color_barra, -1)
-
-        desplazamiento_y = desplazamiento_y + 25
-        progreso = estado["cuadros_seguidos"]
-        cuadros_necesarios = obtener_cuadros_necesarios(gesto_predicho)
-
-        if progreso > cuadros_necesarios:
-            progreso = cuadros_necesarios
-
-        texto_progreso = "Confirmacion: " + str(progreso) + "/" + str(cuadros_necesarios)
-        cuadro = dibujar_texto(cuadro, texto_progreso, 10, desplazamiento_y, 0.4, (200, 200, 200), 1)
-
-        if gesto_predicho == 7:
-            desplazamiento_y = desplazamiento_y + 20
-
-            cuadro = dibujar_texto(
-                cuadro,
-                "CUIDADO: Apagar PC",
-                10,
-                desplazamiento_y,
-                0.4,
-                (0, 0, 255),
-                2,
-            )
-
-    else:
-        cuadro = dibujar_texto(
-            cuadro,
-            "Esperando gesto...",
-            10,
-            desplazamiento_y,
-            0.5,
-            (150, 150, 150),
-            1,
-        )
-
-        desplazamiento_y = desplazamiento_y + 60
+    desplazamiento_y = 200
 
     desplazamiento_y = desplazamiento_y + 30
 
@@ -554,9 +468,7 @@ def abrir_camara():
 
 def main():
 
-    print("=" * 60)
     print("GestureOS - Inferencia en Tiempo Real")
-    print("=" * 60)
 
     pyautogui.FAILSAFE = True
     pyautogui.PAUSE = 0.05
@@ -575,7 +487,6 @@ def main():
     tiempo_anterior = time.time()
     cuadros_por_segundo = 0
 
-    print("\nIniciando inferencia...")
     print("Controles: +/- ajustar umbral | q salir")
     print("")
     print("ACCIONES CONFIGURADAS:")
@@ -586,9 +497,8 @@ def main():
         print("  [" + str(indice_gesto) + "] " + nombre + " -> " + accion)
 
     print("")
-    print("NOTA: 'Apagar PC' requiere mantener el gesto 15 cuadros.")
+    print("ADVERTENCIA :/ 'Apagar PC' requiere mantener el gesto 15 cuadros.")
     print("      Si se activa, tienes 10 seg para cancelar con: shutdown /a")
-    print("=" * 60)
 
     with mp_manos.Hands(
         static_image_mode=False,
